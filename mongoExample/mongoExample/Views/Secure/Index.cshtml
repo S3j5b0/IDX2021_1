@@ -1,0 +1,30 @@
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "_Layout";
+}
+
+<h2>title</h2>
+@using Microsoft.AspNetCore.Authentication
+
+<h2> Claims </h2>
+
+<d1>
+    @foreach (var claim in User.Claims)
+    {
+        <dt> @claim.Type</dt>
+        <dd>@claim.Value</dd>
+    }
+</d1>
+
+<h2> Properties </h2>
+<d1>
+    @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
+    {
+        <h1> doktor pjuskekbish </h1>
+        <dt> @prop.Key</dt>
+        <dd>@prop.Value</dd>
+    }
+    
+    
+</d1>

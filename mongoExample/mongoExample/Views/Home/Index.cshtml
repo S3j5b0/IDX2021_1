@@ -1,0 +1,104 @@
+﻿@using mongoExample.Models
+@model Tuple<User,List<User>>
+  <link rel="stylesheet" href="../../wwwroot/css/askStyles.css">
+<link rel="stylesheet" href="../../wwwroot/css/bootstrap.min.css">
+@{
+    var loggedInUser = Model.Item1;
+}
+<div class="container text-center">
+    <div class="row">
+        <div class="col-sm-3 well">
+            <div class="well">
+                <p>
+                    <a>@loggedInUser.status</a>
+                </p>
+            </div>
+
+            <div class="alert alert-success fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+
+                Did you save some cash? Buy a tree!
+            </div>
+            <table>
+                @if (Context.Request.Cookies["mode"] == "env")
+                {
+                    <tr>
+                        <td>spent this week</td>
+                        <td>@loggedInUser.EconomicModel.WeeklyPrice</td>
+                    </tr>
+                    <tr>
+                        <td>Saved from last week</td>
+                        <td>@loggedInUser.EconomicModel.savedFromLastWeek</td>
+                    </tr>
+                    <tr>
+                        <td>Yearly spending</td>
+                        <td>@loggedInUser.EconomicModel.yearlySpending</td>
+                    </tr>
+                }
+                else if (Context.Request.Cookies["mode"] == "monetary" || Context.Request.Cookies["mode"] == null)
+                {
+                    <tr>
+                        <td>used this week</td>
+                        <td>@loggedInUser.EnviormentalStats.WeeklyKWHUsage</td>
+                    </tr>
+                    <tr>
+                        <td>Saved from last week</td>
+                        <td>@loggedInUser.EnviormentalStats.savedFromLastWeek</td>
+                    </tr>
+                    <tr>
+                        <td>Yearly usage</td>
+                        <td>@loggedInUser.EnviormentalStats.yearlySpending</td>
+                    </tr>
+                }
+            </table>
+        </div>
+        <div class="col-sm-7">
+
+
+
+<div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default text-left">
+                        <div class="panel-body">
+                            <form action="@Url.Action("updateStatus", "Home")">
+                                <textarea class="greyback" id="w3review" name="status" rows="4" cols="50" placeholder="Update your status..."></textarea>
+                                <br><br>
+                                <input class="input" type="submit" value="Submit">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+@foreach (User user in @Model.Item2)
+{
+
+
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="well @user.Color">
+        <p>@user.name </p>
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <div class="well neutral">
+        <p> @user.status</p>
+        <div class="bottom-left-text">
+          @if (Context.Request.Cookies["mode"] == "env"){
+            <span class="label label-default"> Weekly usage: @user.EnviormentalStats?.WeeklyKWHUsage</span>
+            <span class="label label-primary">KHW Saved compared to last week: @user.EnviormentalStats?.savedFromLastWeek</span>
+            <span class="label label-success"> Yearly KHW usage: @user.EnviormentalStats?.yearlySpending</span>
+          }
+          else if (Context.Request.Cookies["mode"] == "monetary" || Context.Request.Cookies["mode"]  == null )
+          {
+            <span class="label label-default"> Weekly price: @user.EconomicModel.WeeklyPrice</span>
+            <span class="label label-primary">Saved compared to last week: @user.EconomicModel.savedFromLastWeek</span>
+            <span class="label label-success"> Yearly spending: @user.EconomicModel.yearlySpending</span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}
+        </div>
+    </div>
+</div>
