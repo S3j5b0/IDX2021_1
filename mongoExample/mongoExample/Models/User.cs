@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace mongoExample.Models
@@ -11,7 +12,7 @@ namespace mongoExample.Models
     }
     public class User
     {
-
+        public List<string> friends { get; set; }
         [Required]
         public string name { get; set; }
         [Required]

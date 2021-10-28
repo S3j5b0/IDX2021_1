@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using mongoExample.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.JSInterop;
 
 namespace mongoExample.Controllers
 {
@@ -15,76 +17,65 @@ namespace mongoExample.Controllers
 
     public class HomeController : Controller
     {
+        private UserManager<ApplicationUser> _userManager;
+        private SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
+            this._userManager = userManager;
+            this._signInManager = signInManager;
             _logger = logger;
         }
         
         [Authorize]
         public IActionResult Index()
         {
+            ApplicationUser usr = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
+
+            var friends = usr.friends;
+
+
+            var usrs = _userManager.Users.ToList().FindAll(x => friends.Contains(x.NormalizedEmail));
+
+            var displayUsers = usrs.Select<ApplicationUser, User>(x => new User()
+            {
+                name = x.UserName,
+                email = x.Email,
+                EconomicModel = x.EconomicModel,
+                EnviormentalStats = x.EnviormentalStats,
+                status = x.status,
+                Color = x.Color
+
+            }).ToList();
             // sig selv 
+            ApplicationUser loggedin = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
             User me = new User();
 
 
-            me.email = "sejsbo@live.dk";
-            me.status = "een hanging out aalll, day ";
-            me.Color = color.red;
-            me.EconomicModel = new EconomicModel();
-            me.EconomicModel.yearlySpending = 43;
-            me.EconomicModel.WeeklyPrice = 735;
-            me.EconomicModel.savedFromLastWeek = 2;
-            me.EnviormentalStats = new EnviormentModel();
-            me.EnviormentalStats.yearlySpending = 255;
-            me.EnviormentalStats.savedFromLastWeek = 2323;
-            me.EnviormentalStats.WeeklyKWHUsage = 4;
+            me.email = loggedin.Email;
+            me.status = loggedin.status;
+            me.Color = loggedin.Color;
+            me.EconomicModel = loggedin.EconomicModel;
+            me.EnviormentalStats = loggedin.EnviormentalStats;
+
             
-            // venner
-            List<User> Users = new List<User>();
-
-            User user1 = new User();
-            user1.name = "calaaaa";
-            user1.email = "carla@live.dk";
-            user1.status = "doing it doing doing yes yes yes ";
-            user1.Color = color.green;
-            user1.EconomicModel = new EconomicModel();
-            user1.EconomicModel.yearlySpending = 43;
-            user1.EconomicModel.WeeklyPrice = 75;
-            user1.EconomicModel.savedFromLastWeek = 2;
-            user1.EnviormentalStats = new EnviormentModel();
-            user1.EnviormentalStats.yearlySpending = 2355;
-            user1.EnviormentalStats.savedFromLastWeek = 23;
-            user1.EnviormentalStats.WeeklyKWHUsage = 9;
-
-            Users.Add(user1);
-            User user2 = new User();
-            user2.name = "frederæk";
-            user2.email = "frederik@live.dk";
-            user2.status = "hack haxck hax ha x";
-            user2.Color = color.yellow;
-            user2.EconomicModel = new EconomicModel();
-            user2.EconomicModel.yearlySpending = 231;
-            user2.EconomicModel.WeeklyPrice = 200;
-            user2.EconomicModel.savedFromLastWeek = 10;
-            user2.EnviormentalStats = new EnviormentModel();
-            user2.EnviormentalStats.yearlySpending = 1000;
-            user2.EnviormentalStats.savedFromLastWeek = 500;
-            user2.EnviormentalStats.WeeklyKWHUsage = 20;
-            Users.Add(user2);
 
 
             Tuple<User, List<User>> modeltup =
-                new Tuple<User, List<User>>(me, Users);
+                new Tuple<User, List<User>>(me, displayUsers);
             return View(modeltup);
         }
         [Authorize]
-        public IActionResult updateStatus()
+        public IActionResult updateStatus(string status)
         {
-            
-            return Content("TBD");
+            ApplicationUser usr = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
+            usr.status = status;
+            _userManager.UpdateAsync(usr).GetAwaiter().GetResult();
+            return RedirectToAction("index");
         }
+        
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

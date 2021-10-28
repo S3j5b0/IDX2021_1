@@ -100,3 +100,4 @@
 /home/ask/Git/IDX2021_1/mongoExample/mongoExample/obj/Debug/net5.0/ref/mongoExample.dll
 /home/ask/Git/IDX2021_1/mongoExample/mongoExample/obj/Debug/net5.0/mongoExample.pdb
 /home/ask/Git/IDX2021_1/mongoExample/mongoExample/obj/Debug/net5.0/mongoExample.genruntimeconfig.cache
+/home/ask/Git/IDX2021_1/mongoExample/mongoExample/bin/Debug/net5.0/Newtonsoft.Json.dll

@@ -1,7 +1,11 @@
 ﻿@using mongoExample.Models
+@using MongoDB.Driver.Core.Operations
+@using Microsoft.JSInterop
 @model Tuple<User,List<User>>
-  <link rel="stylesheet" href="../../wwwroot/css/askStyles.css">
-<link rel="stylesheet" href="../../wwwroot/css/bootstrap.min.css">
+@inject IJSRuntime JsRuntime 
+  <link rel="stylesheet" href="/css/askStyles.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<script src="/js/site.js"></script>
 @{
     var loggedInUser = Model.Item1;
 }
@@ -51,10 +55,20 @@
                     </tr>
                 }
             </table>
+            <form action="javascript:GetUserAPI()">
+                <input type="text" id="fname" name="fname" placeholder="Add a friend, type email"><br>
+               <input class="button" name="submit" type="submit" value="submit"  />
+            </form>        
+            <div id="responseContainer">
+                        
+                    </div>
         </div>
+        
+
         <div class="col-sm-7">
 
 
+ 
 
 <div class="row">
                 <div class="col-sm-12">

@@ -1,12 +1,16 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using mongoExample.Models;
 
 namespace mongoExample.Controllers
+
 {
     public class UserController : Controller
     {
+        protected ILookupNormalizer normalizer;
         private UserManager<ApplicationUser> _userManager;
         private RoleManager<ApplicationRole> _RoleManager;
         public UserController(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
@@ -28,10 +32,24 @@ namespace mongoExample.Controllers
         {
             if (ModelState.IsValid)
             {
+                var rand = new Random();
+                EconomicModel econ = new EconomicModel();
+                econ.yearlySpending = rand.Next();
+                econ.WeeklyPrice = rand.Next();
+                econ.savedFromLastWeek = rand.Next();
+                EnviormentModel env = new EnviormentModel();
+                env.yearlySpending = rand.Next();
+                env.savedFromLastWeek = 25;
+                env.WeeklyKWHUsage = 36;
                 ApplicationUser appUser = new ApplicationUser()
                 {
+                    status = "hi there, my name is garsy garse",
+                    Color = color.green,
                     UserName = user.name,
-                    Email = user.email
+                    Email = user.email,
+                    EconomicModel = econ,
+                    EnviormentalStats = env,
+                    friends = new List<string>()
                 };
                 IdentityResult result = await _userManager.CreateAsync(appUser, user.password);
                 if (result.Succeeded)
