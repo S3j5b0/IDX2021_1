@@ -5,6 +5,7 @@
 @inject IJSRuntime JsRuntime 
   <link rel="stylesheet" href="/css/askStyles.css">
 <link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="/js/site.js"></script>
 @{
     var loggedInUser = Model.Item1;
@@ -47,11 +48,11 @@
                     </tr>
                     <tr>
                         <td>Saved from last week</td>
-                        <td>@loggedInUser.EnviormentalStats.savedFromLastWeek</td>
+                        <td>@loggedInUser.EnviormentalStats.savedKHWFromLastWeek</td>
                     </tr>
                     <tr>
                         <td>Yearly usage</td>
-                        <td>@loggedInUser.EnviormentalStats.yearlySpending</td>
+                        <td>@loggedInUser.EnviormentalStats.yearlyKHWSpending</td>
                     </tr>
                 }
             </table>
@@ -60,8 +61,10 @@
                <input class="button" name="submit" type="submit" value="submit"  />
             </form>        
             <div id="responseContainer">
-                        
-                    </div>
+            </div>
+            <a href="@Url.Action("Updateuser","API")">
+            <button   class="btn"  style="float: right;" ><i class="fa fa-refresh"></i></button>
+            </a>
         </div>
         
 
@@ -99,8 +102,8 @@
         <div class="bottom-left-text">
           @if (Context.Request.Cookies["mode"] == "env"){
             <span class="label label-default"> Weekly usage: @user.EnviormentalStats?.WeeklyKWHUsage</span>
-            <span class="label label-primary">KHW Saved compared to last week: @user.EnviormentalStats?.savedFromLastWeek</span>
-            <span class="label label-success"> Yearly KHW usage: @user.EnviormentalStats?.yearlySpending</span>
+            <span class="label label-primary">KHW Saved compared to last week: @user.EnviormentalStats?.savedKHWFromLastWeek</span>
+            <span class="label label-success"> Yearly KHW usage: @user.EnviormentalStats?.yearlyKHWSpending</span>
           }
           else if (Context.Request.Cookies["mode"] == "monetary" || Context.Request.Cookies["mode"]  == null )
           {
