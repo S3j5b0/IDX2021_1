@@ -36,17 +36,13 @@ namespace mongoExample.Controllers
         {
             if (ModelState.IsValid)
             {
-                
-                
-                
-                
-                
+
                 var p = new Person(user.name, user.email);
                 var json = JsonConvert.SerializeObject(p);
 
                 string rez;
                 try
-                {
+                { 
                     var data = new StringContent(json, Encoding.UTF8, "application/json");
                     var url = "http://127.0.0.1:9999/createuser";
                     using var client = new HttpClient();

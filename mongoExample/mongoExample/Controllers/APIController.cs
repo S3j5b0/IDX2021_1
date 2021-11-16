@@ -83,10 +83,9 @@ namespace mongoExample.Controllers
         public  IActionResult Updateuser()
         {
             ApplicationUser u = new ApplicationUser();
-            
-            var hass = new hash();
-            hass.h = "yoyoyoyo";
-            string json = JsonConvert.SerializeObject(hass);
+
+            var hass = new hashContainer("sometihn");
+            var json = JsonConvert.SerializeObject(hass);
 
             string rez;
             try
@@ -108,11 +107,22 @@ namespace mongoExample.Controllers
             
           //  usr.status = status;
          //   _userManager.UpdateAsync(usr).GetAwaiter().GetResult();
-            return RedirectToAction("index", "Home");
+             return RedirectToAction("index", "Home");
         }
            
         }
 
 
-    
+    public class hashContainer
+    {
+        public string h { get; set; }
+
+        public hashContainer(string s)
+        {
+            this.h = s;
+        }
+
+
+
+    }
 }
