@@ -104,9 +104,7 @@ namespace mongoExample.Controllers
             
             ApplicationUser usr = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
             
-            
-          //  usr.status = status;
-         //   _userManager.UpdateAsync(usr).GetAwaiter().GetResult();
+
              return RedirectToAction("index", "Home");
         }
            
