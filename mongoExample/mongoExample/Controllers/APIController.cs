@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using mongoExample.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace mongoExample.Controllers
 {
@@ -79,19 +80,18 @@ namespace mongoExample.Controllers
 
             return hash;
         }
-        
-        public  IActionResult Updateuser()
+
+        private string updateAndgetNewuser()
         {
-            ApplicationUser u = new ApplicationUser();
-
-            var hass = new hashContainer("sometihn");
+            var hass = new hashContainer(hashUserEmail());
             var json = JsonConvert.SerializeObject(hass);
-
-            string rez;
+            
+            // getting user info from api
+            string rez = "";
             try
             {
                 var data = new StringContent(json, Encoding.UTF8, "application/json");
-                var url = "http://127.0.0.1:9999/createuser";
+                var url = "http://127.0.0.1:9999/updateuser";
                 using var client = new HttpClient();
                 var response = client.PostAsync(url, data).GetAwaiter().GetResult();
 
@@ -101,10 +101,43 @@ namespace mongoExample.Controllers
             {
                 Content("error accessing watts api, maybe turn it on?");
             }
-            
-            ApplicationUser usr = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
-            
 
+            return rez;
+        }
+        public  IActionResult Updateuser()
+        {
+            string stringUsr = updateAndgetNewuser();
+
+            var cuurrentusr = _userManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
+
+            JObject jsonUser = JObject.Parse(stringUsr);
+            
+            color col = color.none;
+            string currentcolor = jsonUser["color"].ToObject<string>();
+
+            switch (currentcolor)
+            {
+                case "red":
+                    col = color.red;
+                    break;
+                case "yellow":
+                    col = color.yellow;
+                    break;
+                case "green":
+                    col = color.green;
+                    break;
+                        
+            }
+            
+            cuurrentusr.EconomicModel.yearlySpending = jsonUser["yearlySpending"].ToObject<int>();
+            cuurrentusr.EconomicModel.WeeklyPrice = jsonUser["WeeklyPrice"].ToObject<int>();
+            cuurrentusr.EconomicModel.savedFromLastWeek = jsonUser["savedFromLastWeek"].ToObject<int>();
+       
+            cuurrentusr.EnviormentalStats.yearlyKHWSpending = jsonUser["yearlyKHWSpending"].ToObject<int>();
+            cuurrentusr.EnviormentalStats.savedKHWFromLastWeek = jsonUser["savedKHWFromLastWeek"].ToObject<int>();
+            cuurrentusr.EnviormentalStats.WeeklyKWHUsage = jsonUser["WeeklyKWHUsage"].ToObject<int>();
+            
+            _userManager.UpdateAsync(cuurrentusr).GetAwaiter().GetResult();
              return RedirectToAction("index", "Home");
         }
            
@@ -113,11 +146,11 @@ namespace mongoExample.Controllers
 
     public class hashContainer
     {
-        public string h { get; set; }
+        public string hash { get; set; }
 
         public hashContainer(string s)
         {
-            this.h = s;
+            this.hash = s;
         }
 
 

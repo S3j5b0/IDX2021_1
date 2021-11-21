@@ -19,7 +19,9 @@ class updateUser(Resource):
 
     def post(self): 
         json_data = request.get_json(force=True)
+        
         hash = json_data['hash']
+
         userdata = dbInterface.db_update(hash)
 
         return userdata, 200

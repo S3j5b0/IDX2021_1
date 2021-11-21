@@ -22,7 +22,7 @@ mydb = client["mydb"]
 
 def updateuservalues(hash, color,WeeklyKWHUsage ,
 savedKHWFromLastWeek, yearlyKHWSpending, WeeklyPrice, savedFromLastWeek, yearlySpending):
-    yearlyKHW = yearlySpending + random.randrange(-500, 500)
+    yearlyKHW = yearlyKHWSpending + random.randrange(-500, 500)
     weeklyKHW = (WeeklyKWHUsage)+random.randrange(-5,5)
     savedweeklyKHW = abs(WeeklyKWHUsage-weeklyKHW)
 
@@ -103,7 +103,9 @@ def db_update( hashquery):
     if cursor == 0:
         return ""
     newusr = updateuservalues(**cursor)
-    updated = mycol.find_one_and_update({'hash': hashquery}, {'$set': newusr}, return_document=ReturnDocument.AFTER)
+
+    updated = mycol.find_one_and_update({'hash': hashquery}, {'$set': newusr },{'_id': False}, return_document=ReturnDocument.AFTER)
+
     return updated
 
 
